@@ -1,0 +1,30 @@
+name: Fetch Gmail (5分おき自動実行)
+
+on:
+  schedule:
+    # UTC基準。5分おきに実行(JSTとの時差は関係なく常に5分間隔)
+    - cron: "*/5 * * * *"
+  # 手動実行もできるようにしておく(テスト・デバッグ用)
+  workflow_dispatch:
+
+jobs:
+  fetch-gmail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call fetch-gmail Edge Function
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://fpeimmpepmxiewmdssjt.supabase.co/functions/v1/fetch-gmail" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json")
+
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "HTTP Status: $http_code"
+          echo "Response body: $body"
+
+          if [ "$http_code" -ge 400 ]; then
+            echo "::error::fetch-gmail returned HTTP $http_code"
+            exit 1
+          fi
