@@ -75,3 +75,5 @@ Supabase Edge Functions の Secrets で管理。詳細と再発行手順は
 
 電話問い合わせの自動化(Twilio + 音声テキスト化)は今回のMVP範囲外。
 月50件の電話問い合わせを既存のAI分類フローに合流させる継続案件として提案中。
+
+詳細は [`docs/phase2-proposal.md`](./docs/phase2-proposal.md) を参照。
